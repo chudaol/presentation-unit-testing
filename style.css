@@ -1,0 +1,98 @@
+.orange-background {
+  background-color: rgba(246, 138, 0, 0.71);
+}
+.pink-background {
+  background-color: rgba(236, 19, 140, 0.71);
+}
+.purple-background {
+  background-color: rgba(146, 62, 189, 0.67);;
+}
+.green-background {
+  background-color: rgba(114, 255, 130, 0.71);
+  color: rgb(98, 54, 78);
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.big-text {
+  font-weight: bold;
+  font-size: 50px;
+  text-transform: uppercase;
+}
+.rounded-span {
+  padding: 0 6px 0 6px!important;
+  border-radius: 5px;
+}
+.line-through {
+  text-decoration: line-through;
+}
+.left-column {
+  width: 49%;
+  float: left;
+}
+.right-column {
+  width: 49%;
+  float: right;
+}
+.reveal section img.no-style-img {
+  margin: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.arrow-img {
+  top: 229px;
+  left: 12px;
+  position: absolute;
+}
+code.smaller-text {
+  font-size: 16px;
+}
+/*FORM*/
+form.example-form .form-label {
+  clear: both;
+  width: 40%;
+  float:left;
+  text-align: right;
+  display: inline-block;
+  margin-top: 5px;
+}
+form.example-form .form-field {
+  width: 58%;
+  float:right;
+  text-align: left;
+  display: inline-block;
+  margin-top: 10px;
+}
+form.example-form .form-field input[type=text],form.example-form .form-field input[type=number] {
+  height: 30px;
+  width: 90%;
+  border-radius: 5px;
+  color: rgb(95, 94, 94);
+  font-weight: bold;
+  font-size: 16px;
+  padding-left: 5px;
+}
+form.example-form input[type=submit] {
+  height: 30px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-family: sans-serif;
+  font-size: 21px;
+  color: rgb(95, 94, 94);
+}
+form.example-form .form-field small {
+  margin-top: 15px;
+}
+form.example-form .result {
+  background-color: rgb(128, 115, 115);
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 25px;
+}

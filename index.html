@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Javascript Unit Testing</title>
+  <link rel="stylesheet" href="bower_components/reveal-js/lib/css/zenburn.css" />
+  <link rel="stylesheet" href="bower_components/reveal-js/css/reveal.css" />
+  <link rel="stylesheet" href="bower_components/reveal-js/css/theme/night.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h1>Javascript Unit Testing</h1>
+      </section>
+      <!--TOPICS-->
+      <section>
+        <h2>Topics</h2>
+        <ol>
+          <li>Unit Tests Introduction</li>
+          <li>Assertions</li>
+          <li>Frameworks and Environment</li>
+          <li>Coverage</li>
+          <li>Karma</li>
+          <li>Real World Example</li>
+        </ol>
+      </section>
+      <!--INTRO-->
+        <section>
+          <h2>Unit Tests Introduction</h2>
+        </section>
+        <!--INTRO: what is it? -->
+        <section>
+          <h2>What is it?</h2>
+          <blockquote style="text-align: justify;">
+            At a high-level, unit testing refers to the practice of testing certain functions and areas – or units – of our code.
+            This gives us the ability to verify that our functions work as expected. That is to say that for any function and given a set of inputs,
+            we can determine if the function is returning the proper values and will gracefully handle failures during the course of execution
+            should invalid input be provided.
+          </blockquote>
+        </section>
+        <!--INTRO: explanation -->
+        <section class="present">
+          <h2>What?</h2>
+          <div class="fragment roll-in grow" data-fragment-index="1">
+            <p class="text-left">Look at your code</p>
+          </div>
+          <div class="fragment roll-in grow" data-fragment-index="2">
+            <p class="text-left">as at the set of</p>
+          </div>
+          <div class="fragment roll-in grow" data-fragment-index="3">
+            <p class="text-left"><span class="big-text pink-background">UNITS</span></p>
+          </div>
+          <div class="fragment roll-in grow" data-fragment-index="7">
+            <img src="img/block.png"/>
+          </div>
+          <div class="fragment roll-in grow" data-fragment-index="4">
+            <p class="text-right">Each <strong>UNIT</strong> has its</p>
+          </div>
+          <div class="fragment roll-in grow" data-fragment-index="5">
+            <p class="text-right"><span class="big-text pink-background">INPUTS</span></p>
+          </div>
+          <div class="fragment roll-in grow" data-fragment-index="6">
+            <p class="text-right">and <span class="big-text pink-background">OUTPUTS</span></p>
+          </div>
+        </section>
+        <!--INTRO: more explanation -->
+        <section>
+          <h2>So what are we testing?</h2>
+          <ul>
+          <li>We know that certain <span class="big-text">inputs</span> should produce certain <span class="big-text">outputs</span></li>
+          <li>Unit tests should test the ability of producing right  <span class="big-text">outputs</span> given different  <span class="big-text">inputs</span></li>
+          </ul>
+        </section>
+        <!--INTRO: example -->
+        <section>
+          <h2>For Example</h2>
+          <pre>
+            <code data-trim class="javascript">
+function factorial(num) {
+  var result;
+
+  result = 1;
+  for (var i = 2; i <= num; i++) {
+    result *= i;
+  }
+  return result;
+}
+            </code>
+          </pre>
+          <div class="present">
+            <p class="fragment text-left">
+              <span class="purple-background rounded-span">input 0</span> should produce <span class="rounded-span orange-background">output 1</span>
+            </p>
+            <p class="fragment text-left">
+              <span class="rounded-span purple-background">input 1</span> should produce <span class="rounded-span orange-background">output 1</span>
+            </p>
+            <p class="fragment text-right">
+              <span class="rounded-span purple-background">input 3</span> should produce <span class="rounded-span orange-background">output 6</span>
+            </p>
+            <p class="fragment text-right">
+              <span class="rounded-span purple-background">negative input</span> should produce <span class="rounded-span orange-background">output ?</span>
+            </p>
+          </div>
+        </section>
+      <!--WHY UNIT TESTS? -->
+        <section>
+          <h2 class="present">Why Unit Tests?</h2>
+          <p class="fragment spending-time">Because we like spending a lot of time and fail a deadline</p>
+          <p class="fragment text-center not-spending-time"><span class="pink-background rounded-span big-text">not!</span></p>
+          <p class="fragment">Because it helps us to identify failures in algorithms and logic</p>
+          <p class="fragment">Because it helps us to improve the quality of code</p>
+          <p class="fragment">Because it makes us to write a code that is easy to test</p>
+          <p class="fragment">Because it prevents future changes from breaking functionality</p>
+          <p class="fragment">Because it help us to have more predictable deadlines and estimations</p>
+          <p>
+            <span class="fragment roll-in orange-background rounded-span">Easy to Test</span>
+            <span class="fragment roll-in orange-background rounded-span">&rarr;</span>
+            <span class="fragment roll-in orange-background rounded-span">Easy to Read</span>
+            <span class="fragment roll-in orange-background rounded-span">&rarr;</span>
+            <span class="fragment roll-in orange-background rounded-span">Less error-prone</span>
+          </p>
+          <p class="fragment text-center not-spending-time"><span class="green-background rounded-span big-text">yes!</span></p>
+        </section>
+        <!--WHY UNIT TESTS?: example-->
+        <section>
+          <h2>Let's see an example</h2>
+          <h3>Consider this page:</h3>
+          <div id="example">
+            <form class="example-form">
+              <div class="form-label">What is your Name?</div>
+              <div class="form-field">
+                <input type="text" name="name"><br/>
+              </div>
+
+              <div class="form-label">Choose any Number</div>
+              <div class="form-field">
+                <input class="form-control" type="number" name="number"><br/>
+              </div>
+
+              <div class="form-label">Choose an operation</div>
+              <div class="form-field">
+                <input type="radio" name="operation" checked value="factorial"> <small>Factorial</small>
+                <input type="radio" name="operation" value="square"> <small>Square</small><br/>
+              </div>
+              <div class="form-field">
+                <input class="submit" type="submit" value="Calculate!" />
+              </div>
+              <div class="form-field" id="example-result">
+                <div class="result">Result will be here</div>
+              </div>
+            </form>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: js code -->
+        <section class="present">
+          <h2>Example of Javascript Code</h2>
+          <pre class="fragment visible">
+            <code data-trim class="javascript">
+$(".example-form .submit").click(function (ev) {
+    var number, name, date, time, result, text, operation;
+
+    ev.preventDefault();
+    ev.stopPropagation();
+
+    name = $("[name=name]").val();
+    number = parseInt($("[name=number").val(), 10);
+    date = new Date();
+    time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();;
+
+    operation = $("[name=operation]:checked").val();
+
+    if (operation === "factorial") {
+        result = 1;
+        for (var i = 2; i <= number; i++) {
+            result *= i;
+        }
+    } else {
+        result = number * number;
+    }
+
+    text = "Hello " + name + "! " + "Now is " + time + ". The result of your operation is " + result;
+
+    $("#example-result .result").html(text);
+});
+            </code>
+          </pre>
+          <p class="fragment">
+            <span class="pink-background">
+              Let's try to test it!
+            </span>
+          </p>
+        </section>
+<section>
+  <h2>For example correct name input</h2>
+  <pre>
+    <code class="javascript">
+describe("clickHandler", function () {
+
+  it("should read correctly a name", function () {
+    $("[name=name]").val("Bob");
+    $("[name=number").val(1);
+
+    //There's no other way to test the correctness of the name
+    expect($("#example-result .result").html().indexOf("Bob")).to.equal(6);
+  });
+});
+    </code>
+  </pre>
+</section>
+        <!--WHY UNIT TESTS?: what do we need to test in example -->
+        <section class="present">
+          <h2>What else do we need to test</h2>
+          <p class="fragment">Different results for factorial for different inputs</p>
+          <p class="fragment">Different results for square for different inputs</p>
+          <p class="fragment">Different result for the name (and if there's no name?)</p>
+          <p class="fragment">Correct data parsing</p>
+          <p class="fragment">... Are we sure we do not forget anything?</p>
+          <p class="fragment"><span class="rounded-span pink-background big-text">No, we're not...</span></p>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section class="present">
+          <h2>Consider splitting a function into simple ones</h2>
+          <h3>They are really easier to test</h3>
+          <div class="left-column fragment">
+          <pre>
+            <code contenteditable data-trim class="smaller-text javascript">
+/**
+* Returns a name introduced into input
+*
+* @returns {string}
+*/
+function getName() {
+    return $(".example-form [name=name]").val();
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column fragment">
+            <pre>
+              <code contenteditable data-trim class="smaller-text javascript">
+describe("getName", function () {
+    it("should be empty " +
+    "when no name is introduced", function () {
+        expect(getName()).to.be.empty;
+    });
+
+    it("should correctly return" +
+        " the introduced name", function () {
+            $(".example-form [name=name]").val("Bob");
+            expect(getName()).to.equal("Bob");
+    });
+});
+              </code>
+            </pre>
+          </div>
+        </section>
+        <section>
+          <h2>Consider splitting a function into simple ones</h2>
+          <div class="left-column fragment">
+            <pre>
+              <code class="javascript smaller-text" data-trim contenteditable="">
+/**
+* Returns a number introduced into input
+*
+* @returns {number}
+*/
+function getNumber() {
+    return parseInt($(".example-form [name=number]").val() || 0, 10);
+}
+              </code>
+            </pre>
+          </div>
+          <div class="right-column fragment">
+            <pre>
+              <code class="javascript smaller-text" data-trim contenteditable="">
+describe("getNumber", function () {
+    it("should return 0 " +
+    "when no number is introduced", function () {
+        expect(getNumber()).to.equal(0);
+    });
+
+    it("should return 0 " +
+    "when string is introduced", function () {
+        $(".example-form [name=number]").val("String");
+        expect(getNumber()).to.equal(0);
+    });
+
+    it("should return an introduced number ", function () {
+        $(".example-form [name=number]").val("59");
+        expect(getNumber()).to.equal(59);
+    });
+});
+              </code>
+            </pre>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section>
+          <h2>Consider splitting a function into simple ones</h2>
+          <div class="left-column fragment">
+          <pre>
+            <code data-trim contenteditable="" class="smaller-text javascript">
+/**
+* Returns a checked operation
+*
+* @returns {string}
+*/
+function getOperation() {
+    return $(".example-form [name=operation]:checked").val();
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column fragment">
+            <pre>
+              <code data-trim contenteditable="" class="smaller-text javascript">
+describe("getOperation", function () {
+    it("should return factorial", function () {
+      $(".example-form [name=operation][value=factorial]").prop("checked", true);
+      expect(getOperation()).to.equal("factorial");
+    });
+
+    it("should return square", function () {
+      $(".example-form [name=operation][value=square]").prop("checked", true);
+      expect(getOperation()).to.equal("square");
+    });
+});
+              </code>
+            </pre>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section>
+          <h2>Consider splitting a function into simple ones</h2>
+          <div class="left-column fragment">
+          <pre>
+            <code data-trim contenteditable="" class="smaller-text javascript">
+/**
+* Calculates a factorial of a given number
+*
+* @param {number} number
+* @returns {number}
+*/
+function factorial(number) {
+    if (number === 0 || number === 1) {
+        return 1;
+    }
+    return number * factorial(number - 1);
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column fragment">
+            <pre>
+              <code data-trim contenteditable="" class="smaller-text javascript">
+describe("factorial", function () {
+    it("should return 1 when number is 0 or 1", function () {
+        expect(factorial(0)).to.equal(1);
+        expect(factorial(1)).to.equal(1);
+    });
+
+    it("should return correct value for other number", function () {
+      expect(factorial(3)).to.equal(6);
+      expect(factorial(5)).to.equal(120);
+    });
+});
+              </code>
+            </pre>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section>
+          <h2>Consider splitting a function into simple ones</h2>
+          <div class="left-column fragment">
+          <pre>
+             <code data-trim contenteditable="" class="smaller-text javascript">
+/**
+* Calculates a square of a given number
+*
+* @param {number} number
+* @returns {number}
+*/
+function square(number) {
+    return number * number;
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column fragment">
+             <pre>
+              <code data-trim contenteditable="" class="smaller-text javascript">
+describe("square", function () {
+    it("should return 0 for 0", function () {
+        expect(square(0)).to.equal(0);
+    });
+
+    it("should return positive number for negative one", function () {
+      expect(square(-3)).to.equal(9);
+    });
+
+    it("should return correct values", function () {
+      expect(square(3)).to.equal(9);
+      expect(square(25)).to.equal(625);
+    });
+});
+              </code>
+             </pre>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section>
+          <h2>Consider splitting a function into simple ones</h2>
+          <div class="left-column fragment">
+          <pre>
+            <code data-trim contenteditable="" class="smaller-text javascript">
+/**
+* Returns a current time in a form hh:mm:ss
+*
+* @returns {string}
+*/
+function getTimeString() {
+    var d;
+
+    d = new Date();
+    return d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column fragment">
+            <pre>
+              <code data-trim contenteditable="" class="smaller-text javascript">
+describe("getTimeString", function () {
+    it("should have a length of 8", function () {
+        expect(getTimeString()).to.have.length(8);
+    });
+
+    it("should have a specific format", function () {
+        expect(/[0-9][0-9]:[0-9][0-9]:[0-9][0-9]/.test(getTimeString()))
+            .to.be.true;
+    });
+});
+              </code>
+            </pre>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section>
+          <h2>Be kind and polite to your code :P</h2>
+          <div class="left-column fragment">
+          <pre>
+            <code data-trim contenteditable="" class="smaller-text javascript">
+/**
+* Creates a text based on the name, time and the result of operation
+*
+* @param {string} name
+* @param {string} time
+* @param {number} result
+* @returns {string}
+*/
+function pleaseCreateFullText(name, time, result) {
+    return "Hello " + name + "! " + "Now is " + time + ". The result of your operation is " + result;
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column fragment">
+            <pre>
+              <code data-trim contenteditable="" class="smaller-text javascript">
+describe("pleaseCreateFullText", function () {
+    it("should return an expected text", function () {
+        expect(pleaseCreateFullText("Bob", "17:59:00", "260"))
+            .to.be.equal("Hello Bob! Now is 17:59:00. The result of your operation is 260");
+    });
+});
+              </code>
+            </pre>
+          </div>
+        </section>
+        <!--WHY UNIT TESTS?: split a function -->
+        <section>
+          <h2>Our final code</h2>
+          <pre>
+            <code class="javascript">
+/**
+ * handler for the submit form
+ */
+$(".example-form1 .submit").click(function (ev) {
+  var number, name, time, result, text;
+
+  ev.preventDefault();
+  ev.stopPropagation();
+
+  name = getName();
+  number = getNumber();
+  time = getTimeString();
+
+  result = getOperation() === "factorial" ? factorial(number) : square(number);
+  text = pleaseCreateFullText(name, time, result);
+
+  $("#example-result .result").html(text);
+});
+            </code>
+          </pre>
+        </section>
+        <!--WHY UNIT TESTS?: what we gain -->
+        <section class="present">
+          <h2>Thus we just test each small function</h2>
+          <h3>What do we gain</h3>
+          <p class="fragment">Code easy to read &hearts;</p>
+          <p class="fragment">Code easy to write &hearts;</p>
+          <p class="fragment">Code easy to maintain &hearts;</p>
+          <p class="fragment">Code easy to test &hearts;</p>
+          <p class="fragment">Our life becomes lot easier! &hearts; &hearts; &hearts;</p>
+        </section>
+        <section>
+          <h2>Actually it saves our time!</h2>
+          <img src="img/save-money.jpg" />
+        </section>
+        <section>
+          <h2>Assertions</h2>
+          <blockquote>Assertion is just a predicate (true/false statement),
+            indicating that we think that this predicate is always <span class="green-background">true</span>.
+            If it's evaluated to <span class="pink-background">false</span> something happened and the test fails.
+          </blockquote>
+        </section>
+        <section>
+          <h2>Example of an assertion function</h2>
+          <p>Actually we can write assertion function at our own</p>
+          <pre>
+            <code class="javascript">
+function assert(predicate) {
+  if (predicate) {
+    return true;
+  } else {
+    throw("Assertion failed");
+  }
+}
+//
+var x = 2;
+assert(x > 2); // Uncaught Assertion failed
+assert(x < 3); // true
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>Example of an assertion function</h2>
+          <p>We can improve it passing a description to it</p>
+          <pre>
+            <code class="javascript">
+function assert(predicate, description) {
+  if (predicate) {
+    return description + " passed!";
+  } else {
+    throw(description + " failed");
+  }
+}
+//
+var x = 2;
+assert(x > 2, "x should be more than 2");
+// Uncaught x should be more than 2 failed
+assert(x < 3, "x should be more less than 3");
+// "x should be more less than 3 passed!"
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>We can write our assertion library and use it for our tests!</h2>
+          <p>Providing an interface to methods like</p>
+          <pre>
+            <code class="javascript">
+              assertTrue(predicate, description);
+              assertFalse(predicate, description);
+              assertEquals(predicate, description);
+                  ...
+            </code>
+          </pre>
+        </section>
+        <section>
+          <h2>But we won't do that.</h2>
+          <p>There are plenty of frameworks which are already doing this</p>
+        </section>
+        <section>
+          <h2>Frameworks and Environment</h2>
+          <ul>
+            <li>Testing frameworks</li>
+            <li>Assertion libraries</li>
+            <li>Test Environment / Test runners</li>
+          </ul>
+        </section>
+        <section class=present>
+          <h2>Testing Frameworks</h2>
+          <p class="text-left fragment roll-in">
+            Provide an interface for building your test suite.
+          </p>
+          <p class="text-right fragment roll-in">
+            <span class="rounded-span orange-background">describe</span>, <span class="rounded-span orange-background">it</span>, <span class="rounded-span orange-background">beforeEach</span>...
+          </p>
+          <p class="text-center fragment roll-in">
+            Examples of such frameworks:
+            <ul>
+              <li><a target="_blank" href="http://visionmedia.github.io/mocha/">Mocha</a></li>
+              <li><a target="_blank" href="http://docs.busterjs.org/en/latest/">Busterjs</a></li>
+              <li><a target="_blank" href="http://jasmine.github.io/edge/introduction.html">Jasmine</a></li>
+            </ul>
+          </p>
+          </section>
+          <section class=present>
+            <h2>Assertion Libraries</h2>
+            <p class="text-left fragment roll-in">
+              Provide an interface for different assertions methods
+            </p>
+            <p class="text-right fragment roll-in">
+              <span class="rounded-span orange-background">expect</span>, <span class="rounded-span orange-background">should</span>, <span class="rounded-span orange-background">assert</span>...
+            </p>
+            <p class="text-center fragment roll-in">
+              Examples of such libraries:
+            <ul>
+              <li><a target="_blank" href="http://chaijs.com/">chaijs</a></li>
+              <li><a target="_blank" href="http://nodejs.org/api/assert.html#assert_assert">Nodejs Assert</a></li>
+              <li><a target="_blank" href="http://jasmine.github.io/edge/introduction.html">Jasmine</a></li>
+            </ul>
+          </p>
+          <!--<li><span class="big-text">Testing environment/ Test Runner</span> - The framework which leverages the power of testing frameworks providing an interface for easy setup and cross-browsing</li>-->
+        </section>
+        <section class=present>
+          <h2>Testing Environment/Test Runners</h2>
+          <p class="text-left fragment roll-in">
+            Provide an interface for easy setup and running tests
+          </p>
+          <p class="text-center fragment roll-in">
+            Examples of such libraries:
+          <ul>
+            <li><a target="_blank" href="https://github.com/mmanela/chutzpah">Chutzpah</a></li>
+            <li><a target="_blank" href="http://js-testrunner.codehaus.org/">JS Test Runner</a></li>
+            <li><a target="_blank" href="http://karma-runner.github.io/0.12/index.html">Karma</a></li>
+            <li><a target="_blank" href="http://jasmine.github.io/edge/introduction.html">Jasmine</a></li>
+          </ul>
+          </p>
+        </section>
+        <section class="present">
+          <h2>How to choose a framework</h2>
+          <p class="fragment"><span class="green-background rounded-span">Simplicity</span> VS <span class="green-background rounded-span">Flexibility</span></p>
+          <br/>
+          <p class="fragment text-left">For simplicity choose <span class="pink-background">Jasmine</span>,
+            write your tests and then just open a file SpecRunner.html in a browser
+          </p>
+          <br/>
+          <p class="fragment text-right">For flexibility use <span class="purple-background">Karma</span> test runner
+            with <span class="purple-background">mocha</span> testing framework with whatever assertion library you like (e.g. <span class="purple-background">chaijs</span>)</p>
+          <br/>
+          <p class="fragment"><q>Also take a look at this article <a href="http://lostechies.com/derickbailey/2012/11/01/javascript-unit-tests-jasmine-vs-mocha/">Jasmin VS Mocha</a></q></p>
+        </section>
+        <section>
+          <h2>Coverage</h2>
+          <div class="fragment left-column">
+            <p>Consider the following code:</p>
+          <pre>
+            <code class="javascript">
+function tellMeTheSignOfNumber(num) {
+    if (num < 0) {
+        return "negative";
+    } else if (num === 0) {
+        return "zero!";
+    } else {
+        return "positive";
+    }
+}
+            </code>
+          </pre>
+          </div>
+          <div class="right-column">
+            <div class="fragment">
+              <p>And consider the following assertions:</p>
+            <pre>
+              <code test="javascript">
+expect(tellMeTheSignOfNumber(1))
+.to.equal("positive");
+              </code>
+            </pre>
+            </div>
+            <p class="fragment">
+              <span class="pink-background big-text rounded-span">?</span>
+              What percentage of our code is covered by test
+              <span class="pink-background big-text rounded-span">?</span>
+            </p>
+          </div>
+        </section>
+        <section>
+          <h2>Coverage</h2>
+          <div class="fragment left-column">
+            <p>Our Code</p>
+          <pre>
+            <code class="javascript">
+function tellMeTheSignOfNumber(num) {
+    if (num < 0) {
+        return "negative";
+    } else if (num === 0) {
+        return "zero!";
+    } else {
+        return "positive";
+    }
+}
+// Assertion
+expect(tellMeTheSignOfNumber(1))
+    .to.equal("positive");
+            </code>
+          </pre>
+          </div>
+          <div class="fragment right-column">
+            <div class="">
+              <p>Coverage Percentage</p>
+              <img src="img/coverage.png" />
+            </div>
+            <p>
+              Accordingly to <a href="https://github.com/karma-runner/karma-coverage">Karma Coverage plugin</a>
+              Based on <a href="https://github.com/yahoo/istanbul">Istanbul</a> code coverage tool.
+            </p>
+          </div>
+        </section>
+        <section>
+          <h2>Basic Types of Coverage</h2>
+          <ul>
+            <li>Function Coverage</li>
+            <li>Statement Coverage</li>
+            <li>Branch Coverage</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Karma</h2>
+          <blockquote cite="http://karma-runner.github.io/0.12/index.html">
+            The main goal for Karma is to bring a productive testing environment to developers. The environment being one where they don't have to set up loads of configurations, but rather a place where developers can just write the code and get instant feedback from their tests. Because getting quick feedback is what makes you productive and creative.
+          </blockquote>
+        </section>
+        <section>
+          <h2>Karma</h2>
+          <img src="img/karma.png"/>
+        </section>
+        <section>
+          <h2>Karma Config File</h2>
+          <pre>
+            <code class="javascript">
+module.exports = function (config) {
+  config.set({
+    // base path, that will be used to resolve files and exclude
+    basePath: "../",
+
+    // list of frameworks which will be used
+    frameworks: ["jasmine", "requirejs"],
+
+    // list of files / patterns to load in the browser
+    files: [
+      {pattern: "modules/*.js"},
+      {pattern: "test/specs/*.js"}
+    ],
+
+    // Start these browsers, currently available:
+    // - Chrome
+    // - ChromeCanary
+    // - Firefox
+    // - Opera
+    // - Safari
+    // - PhantomJS
+    browsers: ["PhantomJS"]
+  });
+};
+            </code>
+          </pre>
+          <p>Full version of the karma config file for masbuilder can be found <a href="karma.conf.with.cov.js">here</a></p>
+        </section>
+      <section class="present">
+        <h2>Let's Write and Run Some Tests!</h2>
+        <p class="fragment text-left">Open the file helpers.js</p>
+        <p class="fragment text-left">Open the test file helpers.js</p>
+        <p class="fragment text-right">Let's write the test for <span class="orange-background">domlist_to_array</span> function</p>
+      </section>
+      <section>
+        <h2>Testing domlist_to_array</h2>
+        <pre>
+          <code class="javascript">
+it('domlist_to_array', function () {
+  var arr;
+
+  arr = [1,2,3];
+  expect(domlist_to_array(arr)).toEqual(arr);
+});
+          </code>
+        </pre>
+      </section>
+      <!--<section>-->
+        <!--<iframe style="width:100%; height: 500px;" src="http://localhost:8088/terminal/"></iframe>-->
+        <!--<p class="text-left">sh run_tests_with_cov.sh</p>-->
+      <!--</section>-->
+      <section>
+        <h2>Let's increase branch coverage of the method <span class="orange-background">indexOf</span></h2>
+        <pre>
+          <code class="javascript">
+it("should throw an error if the array is null or undefined", function () {
+  expect(function () {indexOf(null, "")}).toThrow();
+  expect(function () {indexOf(undefined, "")}).toThrow();
+  expect(function () {indexOf(void 0, "")}).toThrow();
+});
+
+it("should return -1 for the empty array", function () {
+  expect(indexOf([], "hello")).toEqual(-1);
+});
+          </code>
+        </pre>
+      </section>
+      <section>
+        <h2>Let's try to take this <span class="orange-background">else</span> path.</h2>
+        <img class="arrow-img no-style-img" src="img/arrow_red.png" width="200px"><img src="img/bug.png" />
+      </section>
+      <section class="present">
+        <h2>What Else Can we Do?</h2>
+        <div class="fragment">
+        <p>Asynchronous Testing</p>
+        <p>
+          <pre>
+            <code class="javascript">
+it("should process server's data correctly", function (done) {
+  ajax.get(url, {}).then(function (data) {
+    expect(processData(data)).toEqual("Expected Value Here");
+    done();
+  }).done();
+});
+            </code>
+          </pre>
+        </p>
+        </div>
+      </section>
+      <section class="present">
+        <h2>What Else Can we Do?</h2>
+        <div class="fragment">
+          <p>Mocking Timeout Functions</p>
+          <p><strong>With Jasmine:</strong></p>
+          <pre>
+            <code class="javascript">
+beforeEach(function () {
+  jasmine.clock().install();
+});
+
+afterEach(function () {
+  jasmine.clock().uninstall();
+});
+
+it("calls timeout", function () {
+  setTimeout(function() {
+    timerCallback();
+  }, 100);
+
+  expect(timerCallback).not.toHaveBeenCalled();
+
+  jasmine.clock().tick(101);
+
+  expect(timerCallback).toHaveBeenCalled();
+});
+            </code>
+          </pre>
+        </div>
+      </section>
+      <section class="present">
+        <h2>What Else Can we Do?</h2>
+        <div class="fragment">
+          <p>Mocking Timeout Functions</p>
+          <p><strong>With <a href="http://sinonjs.org/docs/">Sinon</a> (supported by chaijs and karma):</strong></p>
+          <pre>
+            <code class="javascript">
+beforeEach(function () {
+  this.clock = sinon.useFakeTimers();
+});
+
+afterEach(function () {
+  this.clock.restore();
+});
+
+it("calls timeout", function () {
+  setTimeout(function() {
+  timerCallback();
+  }, 100);
+
+  expect(timerCallback).not.toHaveBeenCalled();
+
+  this.clock().tick(101);
+
+  expect(timerCallback).toHaveBeenCalled();
+});
+            </code>
+          </pre>
+        </div>
+      </section>
+      <section class="present">
+        <h2>What Else Can we Do?</h2>
+        <div class="fragment">
+          <p>Mocking Server!</p>
+          <p><strong>With <a href="http://sinonjs.org/docs/">Sinon</a> (supported by chaijs and karma):</strong></p>
+          <pre>
+            <code class="javascript">
+beforeEach(function () {
+  this.server = sinon.fakeServer.create();
+  this.server.respondWith(
+      "GET",
+      /subaccount/,
+      [200, {"Content-Type": "application/json"}, [{"id":1, name: "Bob"}]]
+  );
+});
+
+afterEach(function () {
+    this.server.restore();
+});
+
+it("renders correctly server data", function (done) {
+    myLib.getSubaccounts(function (data) {
+      myLib.renderSubaccounts(data);
+      expect($(".subaccountsList")).to.exist;
+      done();
+    }).done();
+});
+            </code>
+          </pre>
+        </div>
+      </section>
+    <section class="present">
+      <p>Our Goal</p>
+      <p class="fragment">Coverage <span class="rounded-span big-text pink-background">80%</span></p>
+      <p class="fragment"><span class="rounded-span big-text purple-background">at least!</span></p>
+    </section>
+    <section>
+      <p><span class="green-background big-text rounded-span">Have fun!</span></p>
+    </section>
+    </div>
+    </div>
+  <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="bower_components/reveal-js/lib/js/head.min.js"></script>
+  <script type="text/javascript" src="bower_components/reveal-js/lib/js/html5shiv.js"></script>
+  <script type="text/javascript" src="bower_components/reveal-js/lib/js/classList.js"></script>
+  <script type="text/javascript" src="bower_components/reveal-js/js/reveal.js"></script>
+  <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="bower_components/reveal-js/plugin/highlight/highlight.js"></script>
+</body>
+</html>
